@@ -9,7 +9,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./src:/go/src/nsym/go-rest
+      - ./src:/go/src
     tty: true
     restart: always
     depends_on:

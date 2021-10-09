@@ -16,4 +16,4 @@
 
 tmp
 docker/mysql/mount/*
-src/go-rest
+src/chat-api

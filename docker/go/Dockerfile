@@ -1,17 +1,12 @@
-FROM golang:1.17.1-alpine3.14 AS build
+FROM golang:1.17-alpine
 
-RUN go get -u github.com/cosmtrek/air
+WORKDIR /go/src
+COPY ./src .
 
-ENV GO111MODULE=on
-WORKDIR /go/src/nsym-m/chat-api
-COPY ./src/go.mod ./src/go.sum ./
-RUN go mod download
+RUN apk upgrade --update && \
+    apk --no-cache add git
 
-COPY ./src/. ./
-RUN go build
+RUN go get -u github.com/cosmtrek/air && \
+    go build -o /go/bin/air github.com/cosmtrek/air
 
-FROM alpine:3.13
-COPY --from=build /go/src/nsym-m/go-rest /usr/local/bin/
-
-EXPOSE 8080
 CMD ["air", "-c", ".air.toml"]

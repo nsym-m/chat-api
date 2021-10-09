@@ -1,0 +1,45 @@
+version: "3"
+
+services:
+  go:
+    container_name: go
+    build:
+      context: .
+      dockerfile: ./docker/go/Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./src:/go/src/nsym/go-rest
+    tty: true
+    restart: always
+    depends_on:
+      - mysql
+
+  mysql:
+    container_name: db
+    build:
+      context: .
+      dockerfile: ./docker/mysql/Dockerfile
+    ports:
+      - "3306:3306"
+    volumes:
+      # gorm can struct->automigrate as well
+      # - ./mysql/init:/docker-entrypoint-initdb.d
+      - ./docker/mysql/mount:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: sampledb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: password
+
+  # document:
+  #   container_name: document
+  #   build:
+  #     context: .
+  #     dockerfile: ./docker/document/Dockerfile
+  #   environment:
+  #     API_URL: swagger/openapi.yaml
+  #   ports:
+  #     - '8080:8080'
+  #   volumes:
+  #     - ./document:/usr/share/nginx/html/swagger

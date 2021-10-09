@@ -8,6 +8,11 @@ import (
 	"github.com/labstack/echo"
 )
 
+type User struct {
+    Name  string `json:"name"`
+    Email string `json:"email"`
+}
+
 func main() {
 	connectionString := fmt.Sprintf(
 		"%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=true&loc=Local",
@@ -41,5 +46,9 @@ func main() {
 
 // Handler
 func hello(c echo.Context) error {
-	return c.String(http.StatusOK, "Hello, World!")	
+	u := new(User)
+	if err := c.Bind(u); err != nil {
+        return err
+    }
+	return c.JSON(http.StatusOK, u)
 }
